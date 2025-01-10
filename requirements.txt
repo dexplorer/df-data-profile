@@ -1,0 +1,14 @@
+# standard 
+pytest
+pytest-cov
+pylint
+black
+ipython
+# standard py app specific
+confuse
+setuptools
+# app specific 
+spacy
+click 
+fastapi 
+uvicorn[standard] 
