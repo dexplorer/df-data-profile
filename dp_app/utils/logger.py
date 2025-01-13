@@ -9,9 +9,8 @@ def config_logger(log_file_name):
         datefmt="%Y-%m-%d %I:%M:%S %p",
         level=logging.INFO,
         filename=log_file,
-        filemode="w", 
-        force=True, 
+        filemode="w",
+        force=True,
     )
     logging.captureWarnings(True)
     # logging.FileHandler(filename, mode='a', encoding=None, delay=False)
-    

@@ -10,7 +10,8 @@ lint:
 	# pylint --disable=R,C dp_app.py
 
 test:
-	python -m pytest -vv --cov=dp_app_core dp_app/tests/test_dp_app_core.py
+	python -m pytest -vv --cov=dp_app/utils dp_app/tests/test_misc.py
+	# python -m pytest -vv --cov=dp_app_core dp_app/tests/test_dp_app_core.py
 
 format:
 	black *.py &&\

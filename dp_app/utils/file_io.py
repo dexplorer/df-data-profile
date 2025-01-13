@@ -23,10 +23,11 @@ def uf_open_file(file_path: str, open_mode: str):
     else:
         return f
 
-def uf_read_delim_file_to_list_of_dict(file_path: str, delim=',') -> list[dict]:
+
+def uf_read_delim_file_to_list_of_dict(file_path: str, delim=",") -> list[dict]:
     with uf_open_file(file_path=file_path, open_mode="r") as f:
-        if delim == '|':
-            reader = csv.DictReader(f, dialect='pipe')
+        if delim == "|":
+            reader = csv.DictReader(f, dialect="pipe")
         else:
             # reader = csv.DictReader(f, fieldnames=content_header) # omit fieldnames to use the first row as field names
             reader = csv.DictReader(f)
@@ -41,4 +42,4 @@ def uf_read_delim_file_to_list_of_dict(file_path: str, delim=',') -> list[dict]:
             raise ValueError("Error in reading the file.")
     except ValueError as error:
         logging.error(error)
-        raise    
+        raise
