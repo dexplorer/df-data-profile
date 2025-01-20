@@ -3,8 +3,8 @@ from dp_app import settings as sc
 
 import logging
 
-from dp_app.utils import file_io as uff
-from dp_app.utils import misc as ufm
+from utils import file_io as uff
+from utils import misc as ufm
 
 import spacy
 

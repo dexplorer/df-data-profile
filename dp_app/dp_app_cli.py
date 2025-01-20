@@ -4,7 +4,7 @@ import os
 import click
 from dp_app import settings as sc
 from dp_app import dp_app_core as dpc
-from dp_app.utils import logger as ufl
+from utils import logger as ufl
 
 
 @click.command()
@@ -18,9 +18,12 @@ def profile_dataset(dataset_id: str, env: str):
     See ./log/dp_app_cli.log for logs.
     """
 
-    logging.info(f"Set configs")
     cfg = sc.load_config(env)
     sc.set_config(cfg)
+
+    script_name = os.path.splitext(os.path.basename(__file__))[0]
+    ufl.config_logger(log_file_path_name=f"{sc.log_file_path}/{script_name}.log")
+    logging.info(f"Configs are set")
 
     logging.info(f"Start profiling the dataset {dataset_id}")
     dp_results = dpc.apply_ner_model(dataset_id=dataset_id)
@@ -42,8 +45,6 @@ cli.add_command(profile_dataset)
 
 
 def main():
-    script_name = os.path.splitext(os.path.basename(__file__))[0]
-    ufl.config_logger(log_file_name=script_name)
     cli()
 
 

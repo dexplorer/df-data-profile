@@ -2,11 +2,12 @@ import setuptools
 
 setuptools.setup(
     name="dp_app",
-    version="1.0",
+    version="1.0.0",
     scripts=["./scripts/dp_app"],
     author="Me",
     description="Data profiling app install.",
-    packages=["dp_app", "dp_app.utils"],
+    url="https://github.com/dexplorer/df-data-profile",
+    packages=["dp_app"],
     # packages = find_packages(),
     install_requires=[
         "setuptools",
