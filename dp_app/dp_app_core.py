@@ -1,4 +1,4 @@
-from dp_app import dataset as ds
+from metadata import dataset as ds
 from dp_app import settings as sc
 
 import logging
@@ -12,32 +12,33 @@ import spacy
 import spacy.cli
 
 spacy.cli.download("en_core_web_sm")
-from spacy.tokenizer import Tokenizer
-from spacy.pipeline import EntityRuler
-from spacy.util import compile_infix_regex
+# from spacy.tokenizer import Tokenizer
+# from spacy.pipeline import EntityRuler
+# from spacy.util import compile_infix_regex
 
 import re
+from functools import lru_cache
 
+# def custom_tokenizer(nlp):
+#     # Take out the existing rule and replace it with a custom one:
+#     inf = list(nlp.Defaults.infixes)
+#     inf.remove(r"(?<=[0-9])[+\-\*^](?=[0-9-])")
+#     inf = tuple(inf)
+#     infixes = inf + tuple([r"(?<=[0-9])[+*^](?=[0-9-])", r"(?<=[0-9])-(?=-)"])
+#     infix_re = compile_infix_regex(infixes)
 
-def custom_tokenizer(nlp):
-    # Take out the existing rule and replace it with a custom one:
-    inf = list(nlp.Defaults.infixes)
-    inf.remove(r"(?<=[0-9])[+\-\*^](?=[0-9-])")
-    inf = tuple(inf)
-    infixes = inf + tuple([r"(?<=[0-9])[+*^](?=[0-9-])", r"(?<=[0-9])-(?=-)"])
-    infix_re = compile_infix_regex(infixes)
+#     return Tokenizer(
+#         nlp.vocab,
+#         prefix_search=nlp.tokenizer.prefix_search,
+#         suffix_search=nlp.tokenizer.suffix_search,
+#         infix_finditer=infix_re.finditer,
+#         token_match=nlp.tokenizer.token_match,
+#         rules=nlp.Defaults.tokenizer_exceptions,
+#     )
 
-    return Tokenizer(
-        nlp.vocab,
-        prefix_search=nlp.tokenizer.prefix_search,
-        suffix_search=nlp.tokenizer.suffix_search,
-        infix_finditer=infix_re.finditer,
-        token_match=nlp.tokenizer.token_match,
-        rules=nlp.Defaults.tokenizer_exceptions,
-    )
-
-
+@lru_cache(maxsize=1)
 def load_customize_nlp_ner_model():
+    logging.info("Loading the ML model")
     nlp = spacy.load("en_core_web_sm")
     # nlp.tokenizer = custom_tokenizer(nlp)
     # ruler = nlp.add_pipe("entity_ruler")
@@ -52,10 +53,7 @@ def load_customize_nlp_ner_model():
 def apply_ner_model(dataset_id: str) -> list:
 
     # Simulate getting the dataset metadata from API
-    datasets_json_file = f"{sc.api_data_path}/{sc.api_datasets_file}"
-    dataset = ds.LocalDelimFileDataset.from_json(
-        datasets_json_file, "datasets", dataset_id
-    )
+    dataset = ds.LocalDelimFileDataset.from_json(dataset_id)
 
     src_file_path = sc.resolve_app_path(dataset.file_path)
     src_file_records = uff.uf_read_delim_file_to_list_of_dict(file_path=src_file_path)

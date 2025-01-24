@@ -1,21 +1,21 @@
-install:
+install: requirements.txt
 	pip install --upgrade pip &&\
 	pip install -r requirements.txt
+
+setup: 
+	python setup.py install
 
 lint:
 	pylint --disable=R,C *.py &&\
 	pylint --disable=R,C dp_app/*.py &&\
 	pylint --disable=R,C dp_app/tests/*.py
-	# pylint --disable=R,C dp_app.py
 
 test:
-	# python -m pytest -vv --cov=dp_app_core dp_app/tests/test_dp_app_core.py
+	# python -m pytest -vv --cov=dp_app dp_app/tests
 
 format:
 	black *.py &&\
 	black dp_app/*.py &&\
 	black dp_app/tests/*.py
 
-all:
-	install lint format test
-	
+all: install setup lint format test

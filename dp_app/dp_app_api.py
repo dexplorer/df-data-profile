@@ -1,8 +1,6 @@
 from dp_app import settings as sc
 from dp_app import dp_app_core as dpc
-from utils import logger as ufl
 import logging
-import os
 
 from fastapi import FastAPI
 import uvicorn
@@ -29,14 +27,12 @@ async def profile_dataset(dataset_id: str, env: str = "dev"):
     cfg = sc.load_config(env)
     sc.set_config(cfg)
 
-    # script_name = os.path.splitext(os.path.basename(__file__))[0]
-    # ufl.config_logger(log_file_path_name=f"{sc.log_file_path}/{script_name}.log")
-    logging.info(f"Configs are set")
+    logging.info("Configs are set")
 
-    logging.info(f"Start profiling the dataset {dataset_id}")
+    logging.info("Start profiling the dataset %s", dataset_id)
     dp_results = dpc.apply_ner_model(dataset_id=dataset_id)
 
-    logging.info(f"Finished profiling the dataset {dataset_id}")
+    logging.info("Finished profiling the dataset %s", dataset_id)
 
     return {"results": dp_results}
 

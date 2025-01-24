@@ -26,7 +26,9 @@ def main():
     # Sample invocation
     # python dp_app.py --env='dev' --dataset_id='3'
 
-    logging.info(f"Starting {script_name}")
+    script_name = os.path.splitext(os.path.basename(__file__))[0]
+
+    logging.info("Starting %s", script_name)
 
     # Get the arguments
     args = vars(parser.parse_args())
@@ -34,22 +36,20 @@ def main():
     env = args["env"]
     src_dataset_id = args["dataset_id"]
 
-    logging.info(f"Set configs")
     cfg = sc.load_config(env)
     sc.set_config(cfg)
     # print(sc.source_file_path)
 
-    script_name = os.path.splitext(os.path.basename(__file__))[0]
     ufl.config_logger(log_file_path_name=f"{sc.log_file_path}/{script_name}.log")
-    logging.info(f"Configs are set")
+    logging.info("Configs are set")
     logging.info(cfg)
 
     dp_results = dpc.apply_ner_model(dataset_id=src_dataset_id)
 
-    print(f"Data profiling results for dataset {src_dataset_id}")
-    print(dp_results)
+    logging.debug("Data profiling results for dataset %s", src_dataset_id)
+    logging.debug(dp_results)
 
-    logging.info(f"Finishing {script_name}")
+    logging.info("Finishing %s", script_name)
 
 
 if __name__ == "__main__":

@@ -23,15 +23,15 @@ def profile_dataset(dataset_id: str, env: str):
 
     script_name = os.path.splitext(os.path.basename(__file__))[0]
     ufl.config_logger(log_file_path_name=f"{sc.log_file_path}/{script_name}.log")
-    logging.info(f"Configs are set")
+    logging.info("Configs are set")
 
-    logging.info(f"Start profiling the dataset {dataset_id}")
+    logging.info("Start profiling the dataset %s", dataset_id)
     dp_results = dpc.apply_ner_model(dataset_id=dataset_id)
 
-    click.echo(f"Data profile results for dataset {dataset_id}")
-    click.echo(dp_results)
+    logging.debug("Data profile results for dataset %s", dataset_id)
+    logging.debug(dp_results)
 
-    logging.info(f"Finished profiling the dataset {dataset_id}")
+    logging.info("Finished profiling the dataset %s", dataset_id)
 
 
 # Create command group
