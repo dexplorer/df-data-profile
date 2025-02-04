@@ -15,3 +15,4 @@ uvicorn[standard]
 # my packages
 git+https://github.com/dexplorer/utils#egg=utils
 git+https://github.com/dexplorer/df-metadata#egg=metadata
+git+https://github.com/dexplorer/df-app-calendar#egg=app_calendar

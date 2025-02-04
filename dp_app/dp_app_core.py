@@ -1,4 +1,7 @@
 from metadata import dataset as ds
+from app_calendar import eff_date as ed
+from utils import spark_io as ufs
+
 from dp_app import settings as sc
 
 import logging
@@ -36,6 +39,7 @@ from functools import lru_cache
 #         rules=nlp.Defaults.tokenizer_exceptions,
 #     )
 
+
 @lru_cache(maxsize=1)
 def load_customize_nlp_ner_model():
     logging.info("Loading the ML model")
@@ -50,27 +54,61 @@ def load_customize_nlp_ner_model():
     return nlp
 
 
-def apply_ner_model(dataset_id: str) -> list:
+def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
 
     # Simulate getting the dataset metadata from API
-    dataset = ds.LocalDelimFileDataset.from_json(dataset_id)
+    # dataset = ds.LocalDelimFileDataset.from_json(dataset_id)
+    dataset = ds.get_dataset_from_json(dataset_id=dataset_id)
 
-    src_file_path = sc.resolve_app_path(dataset.file_path)
-    src_file_records = uff.uf_read_delim_file_to_list_of_dict(file_path=src_file_path)
+    # Get current effective date
+    cur_eff_date = ed.get_cur_eff_date(
+        schedule_id=dataset.schedule_id, cycle_date=cycle_date
+    )
+    cur_eff_date_yyyymmdd = ed.fmt_date_str_as_yyyymmdd(cur_eff_date)
+
+    src_data_records = []
+    if dataset.kind == ds.DatasetKind.LOCAL_DELIM_FILE:
+        # Read the source data file
+        src_file_path = sc.resolve_app_path(
+            dataset.resolve_file_path(cur_eff_date_yyyymmdd)
+        )
+        logging.info("Reading the file %s", src_file_path)
+        src_data_records = uff.uf_read_delim_file_to_list_of_dict(
+            file_path=src_file_path
+        )
+
+    elif dataset.kind == ds.DatasetKind.SPARK_TABLE:
+        # Read the spark table
+        qual_target_table_name = dataset.get_qualified_table_name()
+        logging.info("Reading the spark table %s", qual_target_table_name)
+        src_data_records = ufs.read_spark_table_into_list_of_dict(
+            qual_target_table_name=qual_target_table_name,
+            cur_eff_date=cur_eff_date,
+            warehouse_path=sc.warehouse_path,
+        )
 
     # Load customized NLP NER model
     NER = load_customize_nlp_ner_model()
 
     # Profile the dataset
     dp_results = []
-    for record in src_file_records:
+    for record in src_data_records:
         for k, v in record.items():
             mdl_out = NER(str(v))
             dp_result = fmt_dp_result(k, v, mdl_out)
             # print(dp_result)
             dp_results.append(dp_result)
 
-    return ufm.dedupe_list_of_dict(dp_results)
+    priority_list = ["PII", "NON PII"]
+    dp_results_deduped = ufm.dedupe_list_of_dict_by_value_priority(
+        records=dp_results,
+        priority_list=priority_list,
+        key_column="column_name",
+        priority_column="data_class",
+    )
+    # dp_results_deduped = ufm.dedupe_list_of_dict(dp_results)
+
+    return dp_results_deduped
 
 
 def get_data_class(col_name, col_val, mdl_labels):

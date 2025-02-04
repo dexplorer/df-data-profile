@@ -18,19 +18,17 @@ async def root():
 
 
 @app.get("/profile-dataset/{dataset_id}")
-async def profile_dataset(dataset_id: str, env: str = "dev"):
+async def profile_dataset(dataset_id: str, env: str = "dev", cycle_date: str = ""):
     """
-    profile the dataset.
-    See ./log/dp_app_cli.log for logs.
+    Profile the dataset.
     """
 
-    cfg = sc.load_config(env)
-    sc.set_config(cfg)
+    sc.load_config(env)
 
     logging.info("Configs are set")
 
     logging.info("Start profiling the dataset %s", dataset_id)
-    dp_results = dpc.apply_ner_model(dataset_id=dataset_id)
+    dp_results = dpc.apply_ner_model(dataset_id=dataset_id, cycle_date=cycle_date)
 
     logging.info("Finished profiling the dataset %s", dataset_id)
 
@@ -42,5 +40,5 @@ if __name__ == "__main__":
         app,
         port=8080,
         host="0.0.0.0",
-        log_config=f"{sc.APP_ROOT_DIR}/cfg/dp_app_api_log.ini",
+        log_config=f"{sc.APP_ROOT_DIR}/cfg/api_log.ini",
     )
