@@ -4,12 +4,13 @@ import logging
 
 config = confuse.Configuration("dp_app", __name__)
 
-global APP_ROOT_DIR
+# global APP_ROOT_DIR
 APP_ROOT_DIR = "/workspaces/df-data-profile/dp_app"
 
 # Define config variables at module scope
 log_file_path = ""
 source_file_path = ""
+warehouse_path = ""
 
 
 def load_config(env):
@@ -36,6 +37,9 @@ def load_config(env):
 
     global source_file_path
     source_file_path = f"{resolve_app_path(cfg['source_file_path'])}"
+
+    global warehouse_path
+    warehouse_path = f"{resolve_app_path(cfg['warehouse_path'])}"
 
 
 def resolve_app_path(rel_path):

@@ -16,9 +16,9 @@
     dp_app profile-dataset --dataset_id "3" --env "dev"
   ```
 
-  ##### If not installed
+- **Profile a dataset via CLI with cycle date override**:
   ```sh
-    python dp_app profile-dataset --dataset_id "3" --env "dev"
+    dp_app profile-dataset --dataset_id "3" --env "dev" --cycle_date "2024-12-26"
   ```
 
 - **Profile a dataset via API**:
@@ -28,15 +28,16 @@
   ```
   ##### Invoke the API endpoint
   ```sh
-    https://<host name with port number>/profile-dataset/{dataset_id}
-    https://<host name with port number>/profile-dataset/3
+    https://<host name with port number>/profile-dataset/?dataset_id=<value>
+    https://<host name with port number>/profile-dataset/?dataset_id=<value>&cycle_date=<value>
+
+    /profile-dataset/?dataset_id=3
+    /profile-dataset/?dataset_id=3&cycle_date=2024-12-26
   ```
   ##### Invoke the API from Swagger Docs interface
   ```sh
     https://<host name with port number>/docs
 
-    /profile-dataset/{dataset_id}
-    /profile-dataset/3
   ```
 
 ### Sample Input (customers_20241226.csv)

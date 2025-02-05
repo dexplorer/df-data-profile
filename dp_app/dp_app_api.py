@@ -12,15 +12,29 @@ app = FastAPI()
 async def root():
     """
     Default route
+
+    Args:
+        none
+
+    Returns:
+        A default message.
     """
 
     return {"message": "Data Profiling App"}
 
 
-@app.get("/profile-dataset/{dataset_id}")
+@app.get("/profile-dataset/")
 async def profile_dataset(dataset_id: str, env: str = "dev", cycle_date: str = ""):
     """
     Profile the dataset.
+
+    Args:
+        dataset_id: Id of the dataset.
+        env: Environment
+        cycle_date: Cycle date
+
+    Returns:
+        Data classifications at column level.
     """
 
     sc.load_config(env)
