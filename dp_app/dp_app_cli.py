@@ -2,7 +2,7 @@ import logging
 import os
 
 import click
-from dp_app import settings as sc
+from dp_app.settings import ConfigParms as sc
 from dp_app import dp_app_core as dpc
 from utils import logger as ufl
 

@@ -2,7 +2,7 @@ from metadata import dataset as ds
 from app_calendar import eff_date as ed
 from utils import spark_io as ufs
 
-from dp_app import settings as sc
+from dp_app.settings import ConfigParms as sc
 
 import logging
 

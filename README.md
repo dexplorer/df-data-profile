@@ -24,7 +24,7 @@
 - **Profile a dataset via API**:
   ##### Start the API server
   ```sh
-    python dp_app/dp_app_api.py
+    python dp_app/dp_app_api.py --env "dev"
   ```
   ##### Invoke the API endpoint
   ```sh
