@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="dp_app",
-    version="1.0.1",
+    version="1.0.2",
     scripts=["./scripts/dp_app"],
     author="Me",
     description="Data profiling app install.",
