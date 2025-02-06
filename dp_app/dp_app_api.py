@@ -42,7 +42,6 @@ async def profile_dataset(dataset_id: str, cycle_date: str = ""):
 
     logging.info("Start profiling the dataset %s", dataset_id)
     dp_results = dpc.apply_ner_model(dataset_id=dataset_id, cycle_date=cycle_date)
-
     logging.info("Finished profiling the dataset %s", dataset_id)
 
     return {"results": dp_results}
