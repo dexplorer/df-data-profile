@@ -5,26 +5,24 @@
 - **Install via Makefile and pip**:
   ```
     make install
-    make setup
   ```
-
 
 ### Usage Examples
 
 - **Profile a dataset via CLI**:
   ```sh
-    dp_app profile-dataset --dataset_id "3" --env "dev"
+    dp-app-cli profile-dataset --dataset_id "3" --env "dev"
   ```
 
 - **Profile a dataset via CLI with cycle date override**:
   ```sh
-    dp_app profile-dataset --dataset_id "3" --env "dev" --cycle_date "2024-12-26"
+    dp-app-cli profile-dataset --dataset_id "3" --env "dev" --cycle_date "2024-12-26"
   ```
 
 - **Profile a dataset via API**:
   ##### Start the API server
   ```sh
-    python dp_app/dp_app_api.py --env "dev"
+    dp-app-api --env "dev"
   ```
   ##### Invoke the API endpoint
   ```sh

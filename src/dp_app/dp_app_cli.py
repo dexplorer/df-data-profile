@@ -2,12 +2,22 @@ import logging
 import os
 
 import click
-from dp_app.settings import ConfigParms as sc
+from config.settings import ConfigParms as sc
+from config import settings as scg
 from dp_app import dp_app_core as dpc
 from utils import logger as ufl
 
+#
+APP_ROOT_DIR = "/workspaces/df-data-profile"
 
-@click.command()
+
+# Create command group
+@click.group()
+def cli():
+    pass
+
+
+@cli.command()
 @click.option(
     "--dataset_id", type=str, default="dev", help="Source dataset id", required=True
 )
@@ -18,7 +28,8 @@ def profile_dataset(dataset_id: str, env: str, cycle_date: str):
     Profile the dataset.
     """
 
-    sc.load_config(env)
+    scg.APP_ROOT_DIR = APP_ROOT_DIR
+    sc.load_config(env=env)
 
     script_name = os.path.splitext(os.path.basename(__file__))[0]
     ufl.config_logger(log_file_path_name=f"{sc.log_file_path}/{script_name}.log")
@@ -31,16 +42,6 @@ def profile_dataset(dataset_id: str, env: str, cycle_date: str):
     logging.info(dp_results)
 
     logging.info("Finished profiling the dataset %s", dataset_id)
-
-
-# Create command group
-@click.group()
-def cli():
-    pass
-
-
-# Add sub command to group
-cli.add_command(profile_dataset)
 
 
 def main():

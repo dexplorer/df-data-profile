@@ -2,12 +2,16 @@ import os
 import argparse
 import logging
 
-from dp_app.settings import ConfigParms as sc
+from config.settings import ConfigParms as sc
+from config import settings as scg
 from dp_app import dp_app_core as dpc
 from utils import logger as ufl
 
 from fastapi import FastAPI
 import uvicorn
+
+#
+APP_ROOT_DIR = "/workspaces/df-data-profile"
 
 app = FastAPI()
 
@@ -47,7 +51,7 @@ async def profile_dataset(dataset_id: str, cycle_date: str = ""):
     return {"results": dp_results}
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="Data Profiling Application")
     parser.add_argument(
         "-e", "--env", help="Environment", const="dev", nargs="?", default="dev"
@@ -58,6 +62,7 @@ if __name__ == "__main__":
     logging.info(args)
     env = args["env"]
 
+    scg.APP_ROOT_DIR = APP_ROOT_DIR
     sc.load_config(env=env)
 
     script_name = os.path.splitext(os.path.basename(__file__))[0]
@@ -74,3 +79,7 @@ if __name__ == "__main__":
     )
 
     logging.info("Stopping the API service")
+
+
+if __name__ == "__main__":
+    main()

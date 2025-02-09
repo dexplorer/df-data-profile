@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools >= 64.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dp_app"
+version = "0.0.1"
+authors = [
+  { name="Rajakumaran Arivumani", email="author@example.com" },
+]
+description = "Data profile app package"
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+#license = "MIT"
+#license-files = ["LICEN[CS]E*"]
+dependencies = [
+  # app specific 
+  "spacy==3.8.3",
+  # my packages
+  "utils @ git+https://github.com/dexplorer/utils",
+  "metadata @ git+https://github.com/dexplorer/df-metadata",
+  "app_calendar @ git+https://github.com/dexplorer/df-app-calendar",
+  "config @ git+https://github.com/dexplorer/df-config",
+]
+keywords = ["data", "profile", "etl", "elt", "framework", "governance"]
+
+[project.optional-dependencies]
+api = [
+  "fastapi" , 
+  "uvicorn[standard]", 
+  ]
+cli = [
+  "click",
+]
+test = [
+  # standard dev tools
+  "pytest",
+  "pytest-cov",
+  "pylint",
+  "black",
+  "ipython",
+]
+
+[project.scripts]
+dp-app-cli = "dp_app.dp_app_cli:main"
+dp-app-api = "dp_app.dp_app_api:main"
+
+[project.urls]
+Homepage = "https://profile.rajakumaran.in"
+Documentation = "https://readthedocs.org"
+Repository = "https://github.com/dexplorer/df-data-profile.git"
+Issues = "https://github.com/dexplorer/df-data-profile/issues"
+Changelog = "https://github.com/dexplorer/df-data-profile/blob/master/CHANGELOG.md"
