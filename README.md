@@ -1,5 +1,18 @@
 # df-data-profile
 
+This application uses a Natural Language Processing (NLP) Named Entity Recognition (NER) model to classify the data as PII vs Non-PII.
+
+Application can be invoked using CLI or REST API end points. This allows the app to be integrated into a larger data ingestion / distribution framework.
+
+### Define the environment variables
+
+Create a .env file with the following variables.
+
+```
+ENV=dev
+APP_ROOT_DIR=
+```
+
 ### Install
 
 - **Install via Makefile and pip**:
@@ -11,26 +24,26 @@
 
 - **Profile a dataset via CLI**:
   ```sh
-    dp-app-cli profile-dataset --dataset_id "3" --env "dev"
+    dp-app-cli profile-dataset --dataset_id "dataset_3"
   ```
 
 - **Profile a dataset via CLI with cycle date override**:
   ```sh
-    dp-app-cli profile-dataset --dataset_id "3" --env "dev" --cycle_date "2024-12-26"
+    dp-app-cli profile-dataset --dataset_id "dataset_3" --cycle_date "2024-12-26"
   ```
 
 - **Profile a dataset via API**:
   ##### Start the API server
   ```sh
-    dp-app-api --env "dev"
+    dp-app-api
   ```
   ##### Invoke the API endpoint
   ```sh
     https://<host name with port number>/profile-dataset/?dataset_id=<value>
     https://<host name with port number>/profile-dataset/?dataset_id=<value>&cycle_date=<value>
 
-    /profile-dataset/?dataset_id=3
-    /profile-dataset/?dataset_id=3&cycle_date=2024-12-26
+    /profile-dataset/?dataset_id=dataset_3
+    /profile-dataset/?dataset_id=dataset_3&cycle_date=2024-12-26
   ```
   ##### Invoke the API from Swagger Docs interface
   ```sh

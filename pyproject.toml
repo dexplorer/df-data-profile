@@ -20,11 +20,12 @@ classifiers = [
 dependencies = [
   # app specific 
   "spacy==3.8.3",
+  "python-dotenv", 
   # my packages
-  "utils @ git+https://github.com/dexplorer/utils",
-  "metadata @ git+https://github.com/dexplorer/df-metadata",
-  "app_calendar @ git+https://github.com/dexplorer/df-app-calendar",
-  "config @ git+https://github.com/dexplorer/df-config",
+  #"utils @ git+https://github.com/dexplorer/utils",
+  #"metadata @ git+https://github.com/dexplorer/df-metadata",
+  #"app_calendar @ git+https://github.com/dexplorer/df-app-calendar",
+  #"config @ git+https://github.com/dexplorer/df-config",
 ]
 keywords = ["data", "profile", "etl", "elt", "framework", "governance"]
 

@@ -1,17 +1,12 @@
 import os
-import argparse
 import logging
-
+from dotenv import load_dotenv
 from config.settings import ConfigParms as sc
-from config import settings as scg
 from dp_app import dp_app_core as dpc
 from utils import logger as ufl
 
 from fastapi import FastAPI
 import uvicorn
-
-#
-APP_ROOT_DIR = "/workspaces/df-data-profile"
 
 app = FastAPI()
 
@@ -52,18 +47,20 @@ async def profile_dataset(dataset_id: str, cycle_date: str = ""):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Data Profiling Application")
-    parser.add_argument(
-        "-e", "--env", help="Environment", const="dev", nargs="?", default="dev"
-    )
+    # Load the environment variables from .env file
+    load_dotenv()
 
-    # Get the arguments
-    args = vars(parser.parse_args())
-    logging.info(args)
-    env = args["env"]
+    # Fail if env variable is not set
+    sc.env = os.environ["ENV"]
+    sc.app_root_dir = os.environ["APP_ROOT_DIR"]
+    sc.load_config()
 
-    scg.APP_ROOT_DIR = APP_ROOT_DIR
-    sc.load_config(env=env)
+    script_name = os.path.splitext(os.path.basename(__file__))[0]
+    ufl.config_logger(log_file_path_name=f"{sc.log_file_path}/{script_name}.log")
+    logging.info("Configs are set")
+    logging.info(os.environ)
+    logging.info(sc.config)
+    logging.info(vars(sc))
 
     script_name = os.path.splitext(os.path.basename(__file__))[0]
     ufl.config_logger(log_file_path_name=f"{sc.log_file_path}/{script_name}.log")
