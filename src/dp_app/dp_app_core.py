@@ -12,7 +12,7 @@ from utils import misc as ufm
 import spacy
 
 # from spacy import displacy
-import spacy.cli
+# import spacy.cli
 
 # spacy.cli.download("en_core_web_sm")
 # from spacy.tokenizer import Tokenizer
@@ -104,8 +104,8 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
 
 @lru_cache(maxsize=1)
 def load_customize_nlp_ner_model():
-    logging.info("Downloading the ML model")
-    spacy.cli.download("en_core_web_sm")
+    # logging.info("Downloading the ML model")
+    # spacy.cli.download("en_core_web_sm")
 
     logging.info("Loading the ML model")
     nlp = spacy.load("en_core_web_sm")

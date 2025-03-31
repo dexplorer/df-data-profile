@@ -4,6 +4,8 @@ install: pyproject.toml
 	pip install --editable .[cli] &&\
 	pip install --editable .[api] &&\
 	pip install --editable .[test]
+
+	python -m spacy download en_core_web_sm
 	
 lint:
 	pylint --disable=R,C src/dp_app/*.py &&\

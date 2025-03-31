@@ -54,23 +54,25 @@ def main():
     sc.load_config()
 
     script_name = os.path.splitext(os.path.basename(__file__))[0]
-    ufl.config_logger(log_file_path_name=f"{sc.app_log_dir}/{script_name}.log")
+    # ufl.config_logger(log_file_path_name=f"{sc.app_log_dir}/{script_name}.log")
+    ufl.config_multi_platform_logger(
+        handlers=sc.log_handlers,
+        log_file_path_name=f"{sc.app_log_dir}/{script_name}.log",
+    )
     logging.info("Configs are set")
     logging.info(os.environ)
     logging.info(sc.config)
     logging.info(vars(sc))
 
-    script_name = os.path.splitext(os.path.basename(__file__))[0]
-    ufl.config_logger(log_file_path_name=f"{sc.app_log_dir}/{script_name}.log")
-    logging.info("Configs are set")
-
     logging.info("Starting the API service")
 
     uvicorn.run(
         app,
-        port=8080,
-        host="0.0.0.0",
-        log_config=f"{sc.app_config_dir}/api_log.ini",
+        port=int(os.environ["API_PORT"]),
+        host=os.environ["API_HOST"],
+        # log_config=f"{sc.app_config_dir}/api_log.ini",
+        # access_log=False,
+        log_config=None,
     )
 
     logging.info("Stopping the API service")

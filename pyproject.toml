@@ -21,16 +21,21 @@ dependencies = [
   # app specific 
   "spacy==3.8.3",
   "python-dotenv", 
-  # my packages
-  #"utils",
+  # my packages (installed locally)
+  #"utils[spark]",
   #"metadata",
   #"app_calendar",
   #"config",
-  # my packages
-  "utils @ git+https://github.com/dexplorer/utils",
-  "metadata @ git+https://github.com/dexplorer/df-metadata",
-  "app_calendar @ git+https://github.com/dexplorer/df-app-calendar",
-  "config @ git+https://github.com/dexplorer/df-config",
+  # my packages (source from docker container)
+  "utils[spark] @ file:///packages/utils",
+  "metadata @ file:///packages/df-metadata",
+  "app_calendar @ file:///packages/df-app-calendar",
+  "config @ file:///packages/df-config",
+  # my packages (source from github)
+  #"utils[spark] @ git+https://github.com/dexplorer/utils",
+  #"metadata @ git+https://github.com/dexplorer/df-metadata",
+  #"app_calendar @ git+https://github.com/dexplorer/df-app-calendar",
+  #"config @ git+https://github.com/dexplorer/df-config",
 ]
 keywords = ["data", "profile", "etl", "elt", "framework", "governance"]
 
