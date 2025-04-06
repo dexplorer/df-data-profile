@@ -6,37 +6,40 @@ Application can be invoked using CLI or REST API end points. This allows the app
 
 ### Define the environment variables
 
-Create a .env file with the following variables.
+Update one of the following .env files which is appropriate for the application hosting pattern.
 
 ```
-APP_ENV=dev
-APP_ROOT_DIR=/workspaces/df-data-profile
-NAS_ROOT_DIR=/workspaces/nas
+on_prem_vm_native.env
+aws_ec2_native.env
+aws_ec2_docker_container.env
+aws_ecs_docker_container.env
 ```
 
 ### Install
 
 - **Install via Makefile and pip**:
   ```
-    make install
+    make install-dev
   ```
 
 ### Usage Examples
 
-- **Profile a dataset via CLI**:
+#### App hosted natively on a VM/EC2
+
+- **via CLI**:
   ```sh
-    dp-app-cli profile-dataset --dataset_id "dataset_3"
+    dp-app-cli --app_host_pattern "aws_ec2_native" profile-dataset --dataset_id "dataset_3"
   ```
 
-- **Profile a dataset via CLI with cycle date override**:
+- **via CLI with cycle date override**:
   ```sh
-    dp-app-cli profile-dataset --dataset_id "dataset_3" --cycle_date "2024-12-26"
+    dp-app-cli --app_host_pattern "aws_ec2_native" profile-dataset --dataset_id "dataset_3" --cycle_date "2024-12-26"
   ```
 
-- **Profile a dataset via API**:
+- **via API**:
   ##### Start the API server
   ```sh
-    dp-app-api
+    dp-app-api --app_host_pattern "aws_ec2_native"
   ```
   ##### Invoke the API endpoint
   ```sh
@@ -49,7 +52,47 @@ NAS_ROOT_DIR=/workspaces/nas
   ##### Invoke the API from Swagger Docs interface
   ```sh
     https://<host name with port number>/docs
+  ```
 
+#### App Hosted as Container on a VM/EC2
+
+- **via CLI**:
+  ```
+	docker run \
+	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
+  --rm -it df-data-profile \
+  dp-app-cli --app_host_pattern "aws_ec2_docker_container" profile-dataset --dataset_id "dataset_3"
+  ```
+
+- **via CLI with cycle date override**:
+  ```
+	docker run \
+	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
+  --rm -it df-data-profile:latest \
+  dp-app-cli --app_host_pattern "aws_ec2_docker_container" profile-dataset --dataset_id "dataset_3" --cycle_date "2024-12-26"
+  ```
+
+- **via API**:
+  ##### Start the API server
+  ```
+	docker run \
+	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
+	-p 9090:9090 \
+	--rm -it df-data-profile:latest \
+  dp-app-api --app_host_pattern "aws_ec2_docker_container"
+  ```
+
+#### App Hosted as a Container on AWS ECS
+  ##### Invoke CLI App by Deploying ECS Task using ECS Task Definition 
+  Enter the following command override under 'Container Overrides'. 
+  ```
+  "dp-app-cli", "--app_host_pattern", "aws_ecs_docker_container", "profile-dataset", "--dataset_id", "dataset_103", "--cycle_date", "2024-12-26"
+  ```
+
+  ##### Invoke API App by Deploying ECS Task using ECS Task Definition 
+  Enter the following command override under 'Container Overrides'. 
+  ```
+  "dp-app-api", "--app_host_pattern", "aws_ecs_docker_container"
   ```
 
 ### Sample Input (customers_20241226.csv)

@@ -1,6 +1,8 @@
 from metadata import dataset as ds
+from metadata import data_source as dsrc
 from app_calendar import eff_date as ed
 from utils import spark_io as ufs
+from utils import aws_s3_io as ufas
 
 from config.settings import ConfigParms as sc
 
@@ -33,6 +35,9 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
     # dataset = ds.LocalDelimFileDataset.from_json(dataset_id)
     dataset = ds.get_dataset_from_json(dataset_id=dataset_id)
 
+    # Simulate getting the data source metadata from API
+    data_source = dsrc.get_data_source_from_json(data_source_id=dataset.data_source_id)
+
     # Get current effective date
     cur_eff_date = ed.get_cur_eff_date(
         schedule_id=dataset.schedule_id, cycle_date=cycle_date
@@ -43,7 +48,10 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
     if dataset.dataset_type == ds.DatasetType.LOCAL_DELIM_FILE:
         # Read the source data file
         src_file_path = sc.resolve_app_path(
-            dataset.resolve_file_path(cur_eff_date_yyyymmdd)
+            dataset.resolve_file_path(
+                date_str=cur_eff_date_yyyymmdd,
+                data_source_user=data_source.data_source_user,
+            )
         )
         logging.info("Reading the file %s", src_file_path)
         src_data_records = ufc.uf_read_delim_file_to_list_of_dict(
@@ -58,6 +66,19 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
             qual_target_table_name=qual_target_table_name,
             cur_eff_date=cur_eff_date,
             warehouse_path=sc.hive_warehouse_dir,
+        )
+
+    elif dataset.dataset_type == ds.DatasetType.AWS_S3_DELIM_FILE:
+        # Read the source data file
+        src_file_uri = sc.resolve_app_path(
+            dataset.resolve_file_uri(
+                date_str=cur_eff_date_yyyymmdd,
+                data_source_user=data_source.data_source_user,
+            )
+        )
+        logging.info("Reading the file %s", src_file_uri)
+        src_data_records = ufas.uf_read_delim_file_to_list_of_dict(
+            s3_obj_uri=src_file_uri, s3_region=sc.s3_region
         )
 
     # Load customized NLP NER model
