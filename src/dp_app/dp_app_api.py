@@ -74,6 +74,10 @@ def main():
     else:
         log_level = logging.INFO
 
+    # Set root logger level
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level=log_level)
+
     # Set env anf cfg variables
     sc.load_config(app_host_pattern)
 

@@ -11,8 +11,8 @@ Update one of the following .env files which is appropriate for the application 
 ```
 on_prem_vm_native.env
 aws_ec2_native.env
-aws_ec2_docker_container.env
-aws_ecs_docker_container.env
+aws_ec2_container.env
+aws_ecs_container.env
 ```
 
 ### Install
@@ -24,14 +24,14 @@ aws_ecs_docker_container.env
 
 ### Usage Examples
 
-#### App hosted natively on a VM/EC2
+#### App Hosted Natively on a VM/EC2
 
 - **via CLI**:
   ```sh
     dp-app-cli --app_host_pattern "aws_ec2_native" profile-dataset --dataset_id "dataset_3"
   ```
 
-- **via CLI with cycle date override**:
+- **via CLI with Cycle Date Override**:
   ```sh
     dp-app-cli --app_host_pattern "aws_ec2_native" profile-dataset --dataset_id "dataset_3" --cycle_date "2024-12-26"
   ```
@@ -61,15 +61,15 @@ aws_ecs_docker_container.env
 	docker run \
 	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
   --rm -it df-data-profile \
-  dp-app-cli --app_host_pattern "aws_ec2_docker_container" profile-dataset --dataset_id "dataset_3"
+  dp-app-cli --app_host_pattern "aws_ec2_container" profile-dataset --dataset_id "dataset_3"
   ```
 
-- **via CLI with cycle date override**:
+- **via CLI with Cycle Date Override**:
   ```
 	docker run \
 	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
   --rm -it df-data-profile:latest \
-  dp-app-cli --app_host_pattern "aws_ec2_docker_container" profile-dataset --dataset_id "dataset_3" --cycle_date "2024-12-26"
+  dp-app-cli --app_host_pattern "aws_ec2_container" profile-dataset --dataset_id "dataset_3" --cycle_date "2024-12-26"
   ```
 
 - **via API**:
@@ -79,20 +79,23 @@ aws_ecs_docker_container.env
 	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
 	-p 9090:9090 \
 	--rm -it df-data-profile:latest \
-  dp-app-api --app_host_pattern "aws_ec2_docker_container"
+  dp-app-api --app_host_pattern "aws_ec2_container"
   ```
 
 #### App Hosted as a Container on AWS ECS
+
+- **via CLI**:
   ##### Invoke CLI App by Deploying ECS Task using ECS Task Definition 
   Enter the following command override under 'Container Overrides'. 
   ```
-  "dp-app-cli", "--app_host_pattern", "aws_ecs_docker_container", "profile-dataset", "--dataset_id", "dataset_103", "--cycle_date", "2024-12-26"
+  "dp-app-cli", "--app_host_pattern", "aws_ecs_container", "profile-dataset", "--dataset_id", "dataset_103", "--cycle_date", "2024-12-26"
   ```
 
+- **via API**:
   ##### Invoke API App by Deploying ECS Task using ECS Task Definition 
   Enter the following command override under 'Container Overrides'. 
   ```
-  "dp-app-api", "--app_host_pattern", "aws_ecs_docker_container"
+  "dp-app-api", "--app_host_pattern", "aws_ecs_container"
   ```
 
 ### Sample Input (customers_20241226.csv)

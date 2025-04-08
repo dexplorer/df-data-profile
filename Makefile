@@ -52,7 +52,7 @@ run-container:
 	-t -i ${IMAGE}:${IMAGE_TAG}
 
 # AWS 
-AWS_ECR = public.ecr.aws/d0h7o5k8
+AWS_ECR := public.ecr.aws/d0h7o5k8
 AWS_ECR_REPO_NAMESPACE := dexplorer
 AWS_ECR_REPO := dexplorer/df-data-profile
 

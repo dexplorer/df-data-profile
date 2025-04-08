@@ -30,6 +30,10 @@ def cli(ctx, app_host_pattern, debug):
     else:
         log_level = logging.INFO
 
+    # Set root logger level
+    root_logger = logging.getLogger()
+    root_logger.setLevel(level=log_level)
+
     # Set env anf cfg variables
     sc.load_config(app_host_pattern)
 
@@ -60,11 +64,9 @@ def profile_dataset(ctx, dataset_id: str, cycle_date: str):
 
     logging.info("Start profiling the dataset %s", dataset_id)
     dp_results = dpc.apply_ner_model(dataset_id=dataset_id, cycle_date=cycle_date)
-
-    logging.info("Data profile results for dataset %s", dataset_id)
-    logging.info(dp_results)
-
     logging.info("Finished profiling the dataset %s", dataset_id)
+
+    return {"results": dp_results}
 
 
 def main():
