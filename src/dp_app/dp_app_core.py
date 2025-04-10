@@ -65,7 +65,7 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
         src_data_records = ufs.read_spark_table_into_list_of_dict(
             qual_target_table_name=qual_target_table_name,
             cur_eff_date=cur_eff_date,
-            warehouse_path=sc.hive_warehouse_dir,
+            warehouse_path=sc.hive_warehouse_path,
         )
 
     elif dataset.dataset_type == ds.DatasetType.AWS_S3_DELIM_FILE:

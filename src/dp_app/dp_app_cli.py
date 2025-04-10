@@ -38,11 +38,11 @@ def cli(ctx, app_host_pattern, debug):
     sc.load_config(app_host_pattern)
 
     script_name = os.path.splitext(os.path.basename(__file__))[0]
-    # ufl.config_logger(log_file_path_name=f"{sc.app_log_dir}/{script_name}.log")
+    # ufl.config_logger(log_file_path_name=f"{sc.app_log_path}/{script_name}.log")
     ufl.config_multi_platform_logger(
         log_level=log_level,
         handlers=sc.log_handlers,
-        log_file_path_name=f"{sc.app_log_dir}/{script_name}.log",
+        log_file_path_name=f"{sc.app_log_path}/{script_name}.log",
     )
 
     logging.info("Configs are set")
@@ -54,8 +54,7 @@ def cli(ctx, app_host_pattern, debug):
 @cli.command()
 @click.option("--dataset_id", type=str, help="Source dataset id", required=True)
 @click.option("--cycle_date", type=str, default="", help="Cycle date")
-@click.pass_context
-def profile_dataset(ctx, dataset_id: str, cycle_date: str):
+def profile_dataset(dataset_id: str, cycle_date: str):
     """
     Profile the dataset.
     """

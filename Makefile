@@ -33,7 +33,7 @@ CONTAINER_PORT := 9090
 
 install: pyproject.toml
 	pip install --upgrade pip &&\
-	pip install .[all]
+	pip install --no-cache-dir .[all]
 
 	python -m spacy download en_core_web_sm
 	
@@ -68,7 +68,8 @@ aws-build-image:
 	-t ${AWS_ECR_REPO} .
 
 aws-tag-image:
-	docker tag ${AWS_ECR_REPO}:${IMAGE_TAG} ${AWS_ECR}/${AWS_ECR_REPO}:${IMAGE_TAG}
+	# docker tag ${AWS_ECR_REPO}:${IMAGE_TAG} ${AWS_ECR}/${AWS_ECR_REPO}:${IMAGE_TAG}
+	docker tag ${IMAGE}:${IMAGE_TAG} ${AWS_ECR}/${AWS_ECR_REPO}:${IMAGE_TAG}
 
 aws-push-image:
 	docker push ${AWS_ECR}/${AWS_ECR_REPO}:${IMAGE_TAG}

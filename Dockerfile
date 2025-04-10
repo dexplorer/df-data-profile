@@ -54,13 +54,22 @@ RUN python${PYTHON_VERSION} -m venv ~/.venv
 # Activate Python virt env
 RUN source ~/.venv/bin/activate
 
-# Copy the source code into the container.
-COPY . /df-data-profile
+# Copy the application dependencies
+COPY ./pyproject.toml /df-data-profile
+COPY ./Makefile /df-data-profile
 
+# Copy the app dependency source code into the container.
 COPY --from=workspaces utils /packages/utils
 COPY --from=workspaces df-metadata /packages/df-metadata
 COPY --from=workspaces df-app-calendar /packages/df-app-calendar
 COPY --from=workspaces df-config /packages/df-config
+
+# Install app dependencies
+RUN --mount=type=cache,target=/root/.cache/pip \
+    make install 
+
+# Copy the app source code into the container.
+COPY . /df-data-profile
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.cache/pip to speed up subsequent builds.
@@ -70,7 +79,7 @@ COPY --from=workspaces df-config /packages/df-config
 #     --mount=type=bind,source=requirements.txt,target=requirements.txt \
 #     python -m pip install -r requirements.txt
 
-# Install app dependencies
+# Install app 
 RUN --mount=type=cache,target=/root/.cache/pip \
     make install 
 
