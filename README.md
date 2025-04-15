@@ -4,7 +4,7 @@ This application uses a Natural Language Processing (NLP) Named Entity Recogniti
 
 Application can be invoked using CLI or REST API end points. This allows the app to be integrated into a larger data ingestion / distribution framework.
 
-### Define the environment variables
+### Define the Environment Variables
 
 Update one of the following .env files which is appropriate for the application hosting pattern.
 
@@ -37,11 +37,11 @@ aws_ecs_container.env
   ```
 
 - **via API**:
-  ##### Start the API server
+  ##### Start the API Server
   ```sh
     dp-app-api --app_host_pattern "aws_ec2_native"
   ```
-  ##### Invoke the API endpoint
+  ##### Invoke the API Endpoint
   ```sh
     https://<host name with port number>/profile-dataset/?dataset_id=<value>
     https://<host name with port number>/profile-dataset/?dataset_id=<value>&cycle_date=<value>
@@ -57,7 +57,7 @@ aws_ecs_container.env
 #### App Hosted as Container on a VM/EC2
 
 - **via CLI**:
-  ```
+  ```sh
 	docker run \
 	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
   --rm -it df-data-profile \
@@ -65,7 +65,7 @@ aws_ecs_container.env
   ```
 
 - **via CLI with Cycle Date Override**:
-  ```
+  ```sh
 	docker run \
 	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
   --rm -it df-data-profile:latest \
@@ -74,7 +74,7 @@ aws_ecs_container.env
 
 - **via API**:
   ##### Start the API server
-  ```
+  ```sh
 	docker run \
 	--mount=type=bind,src=/home/ec2-user/workspaces/nas,dst=/nas \
 	-p 9090:9090 \
@@ -87,14 +87,14 @@ aws_ecs_container.env
 - **via CLI**:
   ##### Invoke CLI App by Deploying ECS Task using ECS Task Definition 
   Enter the following command override under 'Container Overrides'. 
-  ```
+  ```sh
   "dp-app-cli", "--app_host_pattern", "aws_ecs_container", "profile-dataset", "--dataset_id", "dataset_103", "--cycle_date", "2024-12-26"
   ```
 
 - **via API**:
   ##### Invoke API App by Deploying ECS Task using ECS Task Definition 
   Enter the following command override under 'Container Overrides'. 
-  ```
+  ```sh
   "dp-app-api", "--app_host_pattern", "aws_ecs_container"
   ```
 
@@ -108,7 +108,7 @@ effective_date,first_name,last_name,full_name,ssn,dob,street_addr1,street_addr2,
 
 ### Sample Output 
 
-```
+```json
 [
     {
       "column_name": "city",
