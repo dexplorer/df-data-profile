@@ -1,19 +1,15 @@
-# syntax=docker.io/docker/dockerfile:1.7-labs
-
 # Base stage - build dependencies
 
-FROM public.ecr.aws/amazonlinux/amazonlinux:latest as builder
+# FROM public.ecr.aws/docker/library/python:3.12.8-slim-bookworm as builder
+FROM public.ecr.aws/docker/library/python:3.12.8-alpine as builder
 
 # Update installed packages and install system dependencies
-RUN dnf update -y \
-    && dnf install -y make \
-    && dnf install -y wget 
+RUN apt-get update -y \
+    && apt-get install -y bash \
+    && apt-get install -y make \
+    && apt-get install -y wget 
 
 ARG PYTHON_VERSION
-
-# Install python and pip 
-RUN dnf install python${PYTHON_VERSION} -y \
-    && dnf install python${PYTHON_VERSION}-pip -y
 
 # Create Python Virtual Env
 RUN python${PYTHON_VERSION} -m venv /venv
@@ -29,42 +25,42 @@ COPY ./Makefile /df-data-profile
 COPY --from=utils . /packages/utils
 COPY --from=df-metadata . /packages/df-metadata
 COPY --from=df-app-calendar . /packages/df-app-calendar
-COPY --from=df-config --exclude=./cfg . /packages/df-config
+COPY --from=df-config . /packages/df-config
 
 # Install app dependencies
-RUN source /venv/bin/activate \
+RUN . /venv/bin/activate \
     && make install
 
 # Copy the app source code into the container.
-COPY --exclude=*.env . /df-data-profile
+COPY . /df-data-profile
 
 # Install app 
-RUN source /venv/bin/activate \
+RUN . /venv/bin/activate \
     && make install 
 
 
 # Final stage
 
-FROM public.ecr.aws/amazonlinux/amazonlinux:latest as runner
+# FROM public.ecr.aws/docker/library/python:3.12.8-slim-bookworm as runner
+FROM public.ecr.aws/docker/library/python:3.12.8-alpine as runner
 
 # Update installed packages and install system dependencies
-RUN dnf update -y \
-    && dnf install -y make \
-    && dnf install -y git \
-    && dnf install -y findutils \
-    && dnf install -y tree \
-    && dnf install -y java-17-amazon-corretto \
-    && dnf install -y procps
+RUN apt-get update -y \
+    && apt-get install -y bash \
+    && apt-get install -y make \
+    && apt-get install -y wget \
+    && apt-get install -y findutils \
+    && apt-get install -y tree \
+    && apt-get install -y procps \
+    # && apt-get install -y java-common 
+    && apt-get install -y openjdk-17-jdk
 # findutils is needed for xargs command
 # shadow-utils is needed for useradd command
-# && \ dnf install -y shadow-utils
-# java-17-amazon-corretto, procps are needed for pyspark
+# && \ apt-get install -y shadow-utils
+# procps is needed for pyspark
+# java-common is needed for java-17-amazon-corretto
 
 ARG PYTHON_VERSION
-
-# Install python and pip 
-RUN dnf install python${PYTHON_VERSION} -y \
-    && dnf install python${PYTHON_VERSION}-pip -y
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -75,7 +71,7 @@ ENV PATH="/venv/bin:$PATH"
 COPY --from=builder /venv /venv
 
 # Copy the app source code from current directory (where Dockerfile is) into the container.
-COPY --exclude=*.env . /df-data-profile
+COPY . /df-data-profile
 COPY --from=df-config ./cfg /packages/df-config/cfg
 
 # Expose the port that the application listens on. i.e. container port
@@ -88,6 +84,8 @@ WORKDIR /df-data-profile
 
 # Create a non-privileged user that the app will run under.
 RUN useradd --create-home --shell /bin/bash app-user
+RUN mkdir -p /nas/datalake/user/hive/warehouse \
+    && chown -R app-user /nas/datalake/user/hive/warehouse
 
 # Switch to the non-privileged user to run the application.
 USER app-user

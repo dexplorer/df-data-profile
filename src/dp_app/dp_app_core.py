@@ -3,11 +3,9 @@ from metadata import data_source as dsrc
 from app_calendar import eff_date as ed
 from utils import spark_io as ufs
 from utils import aws_s3_io as ufas
-
 from config.settings import ConfigParms as sc
-
 import logging
-
+from pyspark.sql import SparkSession
 from utils import csv_io as ufc
 from utils import misc as ufm
 
@@ -44,6 +42,13 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
     )
     cur_eff_date_yyyymmdd = ed.fmt_date_str_as_yyyymmdd(cur_eff_date)
 
+    # Create spark session
+    if dataset.dataset_type == ds.DatasetType.SPARK_TABLE:
+        logging.info("Creating spark session using spark connect")
+        spark: SparkSession = ufs.create_spark_session_using_connect(
+            spark_connect_uri=sc.spark_connect_uri,
+        )
+
     src_data_records = []
     if dataset.dataset_type == ds.DatasetType.LOCAL_DELIM_FILE:
         # Read the source data file
@@ -65,7 +70,7 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
         src_data_records = ufs.read_spark_table_into_list_of_dict(
             qual_target_table_name=qual_target_table_name,
             cur_eff_date=cur_eff_date,
-            warehouse_path=sc.hive_warehouse_path,
+            spark=spark,
         )
 
     elif dataset.dataset_type == ds.DatasetType.AWS_S3_DELIM_FILE:
@@ -100,8 +105,8 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
         key_column="column_name",
         priority_column="data_class",
     )
-    # dp_results_deduped = ufm.dedupe_list_of_dict(dp_results)
 
+    # print(dp_results_deduped)
     return dp_results_deduped
 
 
