@@ -68,7 +68,7 @@ def apply_ner_model(dataset_id: str, cycle_date: str) -> list:
         qual_target_table_name = dataset.get_qualified_table_name()
         logging.info("Reading the spark table %s", qual_target_table_name)
         src_data_records = ufs.read_spark_table_into_list_of_dict(
-            qual_target_table_name=qual_target_table_name,
+            qual_table_name=qual_target_table_name,
             cur_eff_date=cur_eff_date,
             spark=spark,
         )
